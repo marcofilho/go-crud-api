@@ -10,8 +10,8 @@ type RestErr struct {
 }
 
 type Cause struct {
-	Message string `json:"message"`
 	Field   string `json:"field"`
+	Message string `json:"message"`
 }
 
 func (r *RestErr) Error() string {
