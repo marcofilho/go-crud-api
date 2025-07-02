@@ -6,7 +6,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ud *UserDomain) UpdateUser(id string) *rest_err.RestErr {
+func (ud *userDomain) UpdateUser(id string) *rest_err.RestErr {
 	logger.Info("Init UpdateUser model", zap.String("journey", "updateUser"))
 
 	ud.EncryptPassword()
