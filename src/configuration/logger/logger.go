@@ -10,6 +10,13 @@ import (
 
 var (
 	log *zap.Logger
+
+	LOG_LEVEL  = "LOG_LEVEL"
+	LOG_OUTPUT = "LOG_OUTPUT"
+
+	LEVEL_KEY   = "level"
+	TIME_KEY    = "time"
+	MESSAGE_KEY = "message"
 )
 
 func init() {
@@ -18,9 +25,9 @@ func init() {
 		Level:       zap.NewAtomicLevelAt(getLevelLogs()),
 		Encoding:    "json",
 		EncoderConfig: zapcore.EncoderConfig{
-			LevelKey:     "level",
-			TimeKey:      "time",
-			MessageKey:   "message",
+			LevelKey:     LEVEL_KEY,
+			TimeKey:      TIME_KEY,
+			MessageKey:   MESSAGE_KEY,
 			EncodeTime:   zapcore.ISO8601TimeEncoder,
 			EncodeLevel:  zapcore.LowercaseLevelEncoder,
 			EncodeCaller: zapcore.ShortCallerEncoder,
@@ -30,8 +37,20 @@ func init() {
 	log, _ = logConfig.Build()
 }
 
+func Info(message string, tags ...zap.Field) {
+	log.Info(message, tags...)
+	log.Sync()
+}
+
+func Error(message string, err error, tags ...zap.Field) {
+	tags = append(tags, zap.NamedError("error", err))
+
+	log.Error(message, tags...)
+	log.Sync()
+}
+
 func getOutputLogger() string {
-	output := strings.ToLower(strings.TrimSpace(os.Getenv("LOG_OUTPUT")))
+	output := strings.ToLower(strings.TrimSpace(os.Getenv(LOG_OUTPUT)))
 	if output == "" {
 		output = "stdout"
 	}
@@ -40,7 +59,7 @@ func getOutputLogger() string {
 }
 
 func getLevelLogs() zapcore.Level {
-	level := strings.ToLower(strings.TrimSpace(os.Getenv("LOG_LEVEL")))
+	level := strings.ToLower(strings.TrimSpace(os.Getenv(LOG_LEVEL)))
 
 	switch level {
 	case "debug":
