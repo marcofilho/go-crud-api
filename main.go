@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +18,7 @@ func main() {
 		log.Fatal("Error setting environment variable:", err)
 	}
 
-	mongodb.NewMongoDBConnection()
+	mongodb.NewMongoDBConnection(context.Background())
 
 	service := service.NewUserDomainService()
 	userController := controller.NewUserControllerInterface(service)
