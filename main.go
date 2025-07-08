@@ -9,6 +9,7 @@ import (
 	"github.com/marcofilho/go-crud-api/src/configuration/database/mongodb"
 	"github.com/marcofilho/go-crud-api/src/controller"
 	"github.com/marcofilho/go-crud-api/src/controller/routes"
+	"github.com/marcofilho/go-crud-api/src/model/repository"
 	"github.com/marcofilho/go-crud-api/src/model/service"
 )
 
@@ -18,9 +19,13 @@ func main() {
 		log.Fatal("Error setting environment variable:", err)
 	}
 
-	mongodb.NewMongoDBConnection(context.Background())
+	database, err := mongodb.NewMongoDBConnection(context.Background())
+	if err != nil {
+		log.Fatalf("Error connecting to MongoDB. Error=%s \n", err.Error())
+	}
 
-	service := service.NewUserDomainService()
+	repo := repository.NewUserRepository(database)
+	service := service.NewUserDomainService(repo)
 	userController := controller.NewUserControllerInterface(service)
 
 	router := gin.Default()

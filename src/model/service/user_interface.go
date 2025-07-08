@@ -3,13 +3,17 @@ package service
 import (
 	"github.com/marcofilho/go-crud-api/src/configuration/rest_err"
 	"github.com/marcofilho/go-crud-api/src/model"
+	"github.com/marcofilho/go-crud-api/src/model/repository"
 )
 
-func NewUserDomainService() UserDomainService {
-	return &userDomainService{}
+func NewUserDomainService(userRepository repository.UserRepository) UserDomainService {
+	return &userDomainService{
+		userRepository: userRepository,
+	}
 }
 
 type userDomainService struct {
+	userRepository repository.UserRepository
 }
 
 type UserDomainService interface {
