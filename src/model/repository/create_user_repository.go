@@ -28,7 +28,7 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 		return nil, rest_err.NewInternalServerError("Error inserting user into database: " + err.Error())
 	}
 
-	userDomain.SetID(result.InsertedID.(string))
+	value.ID = result.InsertedID.(string)
 
-	return userDomain, nil
+	return converter.ConvertEntityToDomain(*value), nil
 }
