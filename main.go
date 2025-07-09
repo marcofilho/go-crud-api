@@ -18,7 +18,7 @@ func main() {
 
 	database, err := mongodb.NewMongoDBConnection(context.Background())
 	if err != nil {
-		log.Fatalf("Error connecting to MongoDB. Error=%s \n", err.Error())
+		log.Fatalf("Error connecting to database. Error=%s \n", err.Error())
 	}
 
 	userController := initDependencies(database)

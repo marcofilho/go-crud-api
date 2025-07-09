@@ -5,10 +5,10 @@ import (
 	"net/mail"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/marcofilho/go-crud-api/src/configuration/logger"
 	"github.com/marcofilho/go-crud-api/src/configuration/rest_err"
 	"github.com/marcofilho/go-crud-api/src/view"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
 )
 
@@ -19,7 +19,7 @@ func (uc *userControllerInterface) FindUserByID(c *gin.Context) {
 
 	userID := c.Param("userID")
 
-	if _, err := uuid.Parse(userID); err != nil {
+	if _, err := primitive.ObjectIDFromHex(userID); err != nil {
 		logger.Error("Error trying to validate userID", err,
 			zap.String("userID", userID),
 			zap.String("journey", "findUserByID"),
