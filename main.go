@@ -7,10 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/marcofilho/go-crud-api/src/configuration/database/mongodb"
-	"github.com/marcofilho/go-crud-api/src/controller"
 	"github.com/marcofilho/go-crud-api/src/controller/routes"
-	"github.com/marcofilho/go-crud-api/src/model/repository"
-	"github.com/marcofilho/go-crud-api/src/model/service"
 )
 
 func main() {
@@ -24,9 +21,7 @@ func main() {
 		log.Fatalf("Error connecting to MongoDB. Error=%s \n", err.Error())
 	}
 
-	repo := repository.NewUserRepository(database)
-	service := service.NewUserDomainService(repo)
-	userController := controller.NewUserControllerInterface(service)
+	userController := initDependencies(database)
 
 	router := gin.Default()
 

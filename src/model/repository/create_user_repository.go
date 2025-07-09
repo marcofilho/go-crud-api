@@ -9,6 +9,7 @@ import (
 	"github.com/marcofilho/go-crud-api/src/model"
 	"github.com/marcofilho/go-crud-api/src/model/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.uber.org/zap"
 )
 
 var (
@@ -16,7 +17,9 @@ var (
 )
 
 func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init createUser repository")
+	logger.Info("Init CreateUser repository",
+		zap.String("journey", "createUser"))
+
 	ctx := context.Background()
 	collection_name := os.Getenv("COLLECTION_NAME")
 	collection := ur.databaseConnection.Collection(collection_name)
@@ -25,11 +28,17 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 
 	result, err := collection.InsertOne(ctx, value)
 	if err != nil {
-		logger.Error("Error inserting user into database:", err)
-		return nil, rest_err.NewInternalServerError("Error inserting user into database: " + err.Error())
+		logger.Error("Error trying to insert a new user", err,
+			zap.String("journey", "createUser"))
+		return nil, rest_err.NewInternalServerError(err.Error())
 	}
 
 	value.ID = result.InsertedID.(primitive.ObjectID)
+
+	logger.Info("CreateUser repository executed successfully",
+		zap.String("userID", value.ID.Hex()),
+		zap.String("journey", "createUser"),
+	)
 
 	return converter.ConvertEntityToDomain(*value), nil
 }
