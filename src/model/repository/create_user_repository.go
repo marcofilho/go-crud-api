@@ -36,5 +36,5 @@ func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (mode
 		zap.String("journey", "createUser"),
 	)
 
-	return converter.ConvertEntityToDomain(*value), nil
+	return converter.ConvertEntityToDomain(value), nil
 }

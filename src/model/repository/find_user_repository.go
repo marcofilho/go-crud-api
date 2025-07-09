@@ -23,10 +23,10 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 	collection_name := os.Getenv(COLLECTION_NAME)
 	collection := ur.databaseConnection.Collection(collection_name)
 
-	userEntity := &entity.UserEntity{}
+	userEntity := entity.UserEntity{}
 
 	filter := bson.D{{Key: "id", Value: id}}
-	err := collection.FindOne(ctx, filter).Decode(userEntity)
+	err := collection.FindOne(ctx, filter).Decode(&userEntity)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -45,7 +45,7 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 		zap.String("journey", "findUserByID"),
 		zap.String("userID", id))
 
-	return converter.ConvertEntityToDomain(*userEntity), nil
+	return converter.ConvertEntityToDomain(userEntity), nil
 }
 
 func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr) {
@@ -56,10 +56,10 @@ func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterfa
 	collection_name := os.Getenv(COLLECTION_NAME)
 	collection := ur.databaseConnection.Collection(collection_name)
 
-	userEntity := &entity.UserEntity{}
+	userEntity := entity.UserEntity{}
 
 	filter := bson.D{{Key: "email", Value: email}}
-	err := collection.FindOne(ctx, filter).Decode(userEntity)
+	err := collection.FindOne(ctx, filter).Decode(&userEntity)
 
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
@@ -79,5 +79,5 @@ func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterfa
 		zap.String("email", email),
 		zap.String("userID", userEntity.ID.Hex()))
 
-	return converter.ConvertEntityToDomain(*userEntity), nil
+	return converter.ConvertEntityToDomain(userEntity), nil
 }

@@ -7,18 +7,41 @@ import (
 	"go.uber.org/zap"
 )
 
-func (ud *userDomainService) FindUserByID(id string) (*model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init FindUserByID model", zap.String("journey", "findUserByID"))
+func (ud *userDomainService) FindUserByID(id string) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Init findUserByID service",
+		zap.String("journey", "findUserByID"))
 
-	logger.Info("User found successfully", zap.String("journey", "findUserByID"))
+	userDomain, err := ud.userRepository.FindUserByID(id)
+	if err != nil {
+		logger.Error("Error trying to call FindByUserID repository", err,
+			zap.String("userID", id),
+			zap.String("journey", "findUserByID"))
+		return nil, err
+	}
 
-	return nil, nil
+	logger.Info("FindByUserID service executed successfully",
+		zap.String("userID", userDomain.GetID()),
+		zap.String("journey", "createUser"))
+
+	return userDomain, nil
 }
 
-func (ud *userDomainService) FindUserByEmail(email string) (*model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init FindUserByEmail model", zap.String("journey", "findUserByEmail"))
+func (ud *userDomainService) FindUserByEmail(email string) (model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Init findUserByEmail service",
+		zap.String("journey", "findUserByEmail"))
 
-	logger.Info("User found successfully", zap.String("journey", "findUserByEmail"))
+	userDomain, err := ud.userRepository.FindUserByEmail(email)
+	if err != nil {
+		logger.Error("Error trying to call FindUserByEmail repository", err,
+			zap.String("email", email),
+			zap.String("journey", "findUserByID"))
+		return nil, err
+	}
 
-	return nil, nil
+	logger.Info("FindUserByEmail service executed successfully",
+		zap.String("email", email),
+		zap.String("userID", userDomain.GetID()),
+		zap.String("journey", "createUser"))
+
+	return userDomain, nil
 }
