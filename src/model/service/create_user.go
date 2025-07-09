@@ -14,7 +14,7 @@ func (ud *userDomainService) CreateUser(userDomain model.UserDomainInterface) (m
 
 	userDomainRepository, err := ud.userRepository.CreateUser(userDomain)
 	if err != nil {
-		return nil, rest_err.NewInternalServerError("error creating user in repository")
+		return nil, err
 	}
 
 	return userDomainRepository, nil
