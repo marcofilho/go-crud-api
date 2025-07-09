@@ -6,6 +6,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+var (
+	COLLECTION_NAME = "COLLECTION_NAME"
+)
+
 type userRepository struct {
 	databaseConnection *mongo.Database
 }

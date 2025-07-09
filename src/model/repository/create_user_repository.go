@@ -12,16 +12,12 @@ import (
 	"go.uber.org/zap"
 )
 
-var (
-	COLLECTION_NAME = "COLLECTION_NAME"
-)
-
 func (ur *userRepository) CreateUser(userDomain model.UserDomainInterface) (model.UserDomainInterface, *rest_err.RestErr) {
-	logger.Info("Init CreateUser repository",
+	logger.Info("Init createUser repository",
 		zap.String("journey", "createUser"))
 
 	ctx := context.Background()
-	collection_name := os.Getenv("COLLECTION_NAME")
+	collection_name := os.Getenv(COLLECTION_NAME)
 	collection := ur.databaseConnection.Collection(collection_name)
 
 	value := converter.ConvertDomainToEntity(userDomain)
