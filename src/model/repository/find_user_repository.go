@@ -11,6 +11,7 @@ import (
 	"github.com/marcofilho/go-crud-api/src/model/repository/entity"
 	"github.com/marcofilho/go-crud-api/src/model/repository/entity/converter"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.uber.org/zap"
 )
@@ -25,7 +26,9 @@ func (ur *userRepository) FindUserByID(id string) (model.UserDomainInterface, *r
 
 	userEntity := entity.UserEntity{}
 
-	filter := bson.D{{Key: "id", Value: id}}
+	objectID, _ := primitive.ObjectIDFromHex(id)
+
+	filter := bson.D{{Key: "_id", Value: objectID}}
 	err := collection.FindOne(ctx, filter).Decode(&userEntity)
 
 	if err != nil {
