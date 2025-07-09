@@ -27,9 +27,8 @@ go.work.sum
 # env file
 .env
 
-# https test files
-.http
 
 # Editor/IDE
 # .idea/
 # .vscode/
+requests.http
