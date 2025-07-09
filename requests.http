@@ -1,9 +1,0 @@
-POST http://localhost:8080/createUser
-Content-Type: application/json
-
-{
-    "email": "azir@lol.com",
-    "password": "midlane!",
-    "name": "Azir",
-    "age": 18
-}
