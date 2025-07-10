@@ -84,3 +84,46 @@ func (ur *userRepository) FindUserByEmail(email string) (model.UserDomainInterfa
 
 	return converter.ConvertEntityToDomain(userEntity), nil
 }
+
+func (ur *userRepository) FindAllUsers() ([]model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Init findAllUsers repository",
+		zap.String("journey", "findAllUsers"))
+
+	ctx := context.Background()
+	collection_name := os.Getenv(COLLECTION_NAME)
+	collection := ur.databaseConnection.Collection(collection_name)
+
+	filter := bson.D{{}}
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			errorMessage := "No users found"
+			logger.Error(errorMessage, err,
+				zap.String("journey", "findAllUsers"))
+			return nil, rest_err.NewNotFoundError(errorMessage)
+		}
+		errorMessage := "Error trying to find all users"
+		logger.Error(errorMessage, err,
+			zap.String("journey", "findAllUsers"))
+		return nil, rest_err.NewInternalServerError(errorMessage)
+	}
+	defer cursor.Close(ctx)
+
+	var usersEntity []model.UserDomainInterface
+
+	for cursor.Next(ctx) {
+		var userEntity entity.UserEntity
+		if err := cursor.Decode(&userEntity); err != nil {
+			errorMessage := "Error decoding user entity"
+			logger.Error(errorMessage, err,
+				zap.String("journey", "findAllUsers"))
+			return nil, rest_err.NewInternalServerError(errorMessage)
+		}
+		usersEntity = append(usersEntity, converter.ConvertEntityToDomain(userEntity))
+	}
+
+	logger.Info("FindAllUsers repository executed successfully",
+		zap.String("journey", "findAllUsers"))
+
+	return usersEntity, nil
+}

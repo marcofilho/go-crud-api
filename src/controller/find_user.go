@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/marcofilho/go-crud-api/src/configuration/logger"
 	"github.com/marcofilho/go-crud-api/src/configuration/rest_err"
+	"github.com/marcofilho/go-crud-api/src/controller/model/response"
 	"github.com/marcofilho/go-crud-api/src/view"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.uber.org/zap"
@@ -80,4 +81,31 @@ func (uc *userControllerInterface) FindUserByEmail(c *gin.Context) {
 	)
 
 	c.JSON(http.StatusOK, view.ConvertDomainToResponse(userDomain))
+}
+
+func (uc *userControllerInterface) FindAllUsers(c *gin.Context) {
+	logger.Info("Initializing FindAllUsers controller",
+		zap.String("journey", "findAllUsers"),
+	)
+
+	usersDomain, err := uc.service.FindAllUsers()
+	if err != nil {
+		logger.Error("Error in FindAllUsers controller", err,
+			zap.String("journey", "findAllUsers"),
+		)
+		c.JSON(err.Code, err)
+		return
+	}
+
+	logger.Info("FindAllUsers controller executed successfully",
+		zap.String("journey", "findAllUsers"),
+	)
+
+	var listUsersResponse []response.UserResponse
+
+	for _, userDomain := range usersDomain {
+		listUsersResponse = append(listUsersResponse, view.ConvertDomainToResponse(userDomain))
+	}
+
+	c.JSON(http.StatusOK, listUsersResponse)
 }

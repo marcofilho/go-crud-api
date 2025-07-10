@@ -45,3 +45,21 @@ func (ud *userDomainService) FindUserByEmail(email string) (model.UserDomainInte
 
 	return userDomain, nil
 }
+
+func (ud *userDomainService) FindAllUsers() ([]model.UserDomainInterface, *rest_err.RestErr) {
+	logger.Info("Init findAllUsers service",
+		zap.String("journey", "findAllUsers"))
+
+	usersDomain, err := ud.userRepository.FindAllUsers()
+	if err != nil {
+		logger.Error("Error trying to call FindAllUsers repository", err,
+			zap.String("journey", "findAllUsers"))
+		return nil, err
+	}
+
+	logger.Info("FindAllUsers service executed successfully",
+		zap.Int("usersCount", len(usersDomain)),
+		zap.String("journey", "findAllUsers"))
+
+	return usersDomain, nil
+}
