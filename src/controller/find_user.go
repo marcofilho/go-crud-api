@@ -32,7 +32,7 @@ func (uc *userControllerInterface) FindUserByID(c *gin.Context) {
 
 	userDomain, err := uc.service.FindUserByID(userID)
 	if err != nil {
-		logger.Error("Error in FindUserByID controller", err,
+		logger.Error("Error trying to call findUserByID service", err,
 			zap.String("userID", userID),
 			zap.String("journey", "findUserByID"),
 		)
@@ -56,7 +56,7 @@ func (uc *userControllerInterface) FindUserByEmail(c *gin.Context) {
 	email := c.Param("email")
 
 	if _, err := mail.ParseAddress(email); err != nil {
-		logger.Error("Error trying to validate userID", err,
+		logger.Error("Error trying to validate email", err,
 			zap.String("email", email),
 			zap.String("journey", "findUserByEmail"),
 		)
@@ -67,7 +67,7 @@ func (uc *userControllerInterface) FindUserByEmail(c *gin.Context) {
 
 	userDomain, err := uc.service.FindUserByEmail(email)
 	if err != nil {
-		logger.Error("Error in FindUserByEmail controller", err,
+		logger.Error("Error trying to call findByEmail service", err,
 			zap.String("userID", email),
 			zap.String("journey", "findUserByEmail"),
 		)
@@ -90,7 +90,7 @@ func (uc *userControllerInterface) FindAllUsers(c *gin.Context) {
 
 	usersDomain, err := uc.service.FindAllUsers()
 	if err != nil {
-		logger.Error("Error in FindAllUsers controller", err,
+		logger.Error("Error trying to call findAllUsers service", err,
 			zap.String("journey", "findAllUsers"),
 		)
 		c.JSON(err.Code, err)
