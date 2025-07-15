@@ -11,11 +11,11 @@ func (ud *userDomainService) UpdateUser(id string, userDomain model.UserDomainIn
 	logger.Info("Init UpdateUser service",
 		zap.String("journey", "updateUser"))
 
-	domain, err := ud.userRepository.UpdateUser(id, userDomain)
+	err := ud.userRepository.UpdateUser(id, userDomain)
 	if err != nil {
 		logger.Error("Error trying to call UpdateUser repository", err,
 			zap.String("journey", "updateUser"))
-		return nil, err
+		return err
 	}
 
 	logger.Info("UpdateUser service executed successfully",

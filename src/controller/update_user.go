@@ -17,6 +17,7 @@ func (uc *userControllerInterface) UpdateUser(c *gin.Context) {
 	logger.Info("Initializing UpdateUser controller",
 		zap.String("journey", "updateUser"),
 	)
+
 	var userRequest request.UserUpdateRequest
 	userID := c.Param("userID")
 
