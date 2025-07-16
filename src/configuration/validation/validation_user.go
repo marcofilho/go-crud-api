@@ -29,18 +29,19 @@ func init() {
 func ValidateUserError(
 	validation_err error,
 ) *rest_err.RestErr {
+
 	var jsonErr *json.UnmarshalTypeError
 	var jsonValidationError validator.ValidationErrors
 
 	if errors.As(validation_err, &jsonErr) {
-		return rest_err.NewBadRequestError("Invalid JSON format")
+		return rest_err.NewBadRequestError("Invalid field type")
 	} else if errors.As(validation_err, &jsonValidationError) {
 		errorsCauses := []rest_err.Cause{}
 
 		for _, e := range validation_err.(validator.ValidationErrors) {
 			cause := rest_err.Cause{
-				Field:   e.Field(),
 				Message: e.Translate(transl),
+				Field:   e.Field(),
 			}
 
 			errorsCauses = append(errorsCauses, cause)
