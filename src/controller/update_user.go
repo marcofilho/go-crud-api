@@ -19,17 +19,6 @@ func (uc *userControllerInterface) UpdateUser(c *gin.Context) {
 	)
 
 	var userRequest request.UserUpdateRequest
-	userID := c.Param("userID")
-
-	if _, err := primitive.ObjectIDFromHex(userID); err != nil {
-		logger.Error("Error trying to validate userID", err,
-			zap.String("userID", userID),
-			zap.String("journey", "updateUser"),
-		)
-		errorMessage := rest_err.NewBadRequestError("Invalid userID format")
-		c.JSON(errorMessage.Code, errorMessage)
-		return
-	}
 
 	if err := c.ShouldBindJSON(&userRequest); err != nil {
 		logger.Error("Error trying to validate user info", err,
@@ -37,6 +26,17 @@ func (uc *userControllerInterface) UpdateUser(c *gin.Context) {
 		restErr := validation.ValidateUserError(err)
 
 		c.JSON(restErr.Code, restErr)
+		return
+	}
+
+	userID := c.Param("userID")
+	if _, err := primitive.ObjectIDFromHex(userID); err != nil {
+		logger.Error("Error trying to validate userID", err,
+			zap.String("userID", userID),
+			zap.String("journey", "updateUser"),
+		)
+		errorMessage := rest_err.NewBadRequestError("Invalid userID format")
+		c.JSON(errorMessage.Code, errorMessage)
 		return
 	}
 
